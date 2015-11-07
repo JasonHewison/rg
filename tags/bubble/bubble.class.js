@@ -1,10 +1,9 @@
 class RgBubble extends RgTag {
 
-  constructor(opts) {
+  constructor({ isvisible = false, content = '' }) {
     super()
-    if (rg.isUndefined(opts)) opts = {}
-    this._isvisible = opts.isvisible
-    this._content = opts.content
+    this._isvisible = isvisible
+    this._content = content
   }
 
   get isvisible() {
@@ -23,12 +22,17 @@ class RgBubble extends RgTag {
 
   showBubble() {
     clearTimeout(this._timer)
+    this._timer = null
     this.isvisible = true
   }
 
   hideBubble() {
+    if (this._timer)
+      return
+
     this._timer = setTimeout(() => {
       this.isvisible = false
+      this._timer = null
       this.update()
     }, 1000)
   }
