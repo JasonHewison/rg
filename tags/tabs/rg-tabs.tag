@@ -1,12 +1,28 @@
 <rg-tabs>
-	<div class="headers">
-		<div each="{ RgTabs.tabs }" class="header { active: active, disabled: disabled }" onclick="{ parent.select }">
+	<div class="headers" role="tablist">
+		<div  
+        each="{ RgTabs.tabs }" 
+        class="header { active: active, disabled: disabled }"
+        onclick="{ parent.select }"
+        onkeyup="{ parent.keyup }"
+        role="tab"
+        aria-selected="{ !!active }"
+        tabindex="{ active ? '0' : '-1' }"
+        id="{ 'rg-tab-' + _rgId }"
+        aria-controls="{ 'rg-tabpanel-' + _rgId }"
+        aria-disabled="{ !!disabled }">
 			<div class="heading" if="{ heading }">
 				<rg-raw content="{ heading }"></rg-raw>
 			</div>
 		</div>
 	</div>
-	<div each="{ RgTabs.tabs }" class="tab { active: active }">
+	<div  
+      each="{ RgTabs.tabs }"
+      class="tab { active: active }"
+      role="tabpanel"
+      aria-hidden="{ !active }"
+      id="{ 'rg-tabpanel-' + _rgId }"
+      aria-labelledby="{ 'rg-tab-' + _rgId }">
 		<div if="{ rg.isDefined(content) }">
 			{ content }
 		</div>
@@ -26,7 +42,23 @@
 
 		this.select = e => {
 			this.RgTabs.select(e.item)
+      e.target.blur()
 		}
+
+    this.keyup = e => {
+      let newTab
+      switch (e.which) {
+        case 37: //Left arrow key
+          newTab = this.RgTabs.selectPrev(e.item)
+          break;
+        case 39: //Right arrow key
+          newTab = this.RgTabs.selectNext(e.item)
+          break;
+      }
+      if (newTab) {
+        document.getElementById(`rg-tab-${newTab._rgId}`).focus()
+      }
+    }
 
 	</script>
 

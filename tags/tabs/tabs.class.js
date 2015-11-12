@@ -21,6 +21,7 @@ class RgTabs extends RgTag {
       this._tabs.forEach((tab, i) => {
         tab.index = i
 
+        if (!tab.hasOwnProperty('_rgId')) tab._rgId = rg.uid()
         if (activeTab) tab.active = false
         if (tab.active) activeTab = true
       })
@@ -40,6 +41,40 @@ class RgTabs extends RgTag {
       })
       if (this.onopen) this.onopen(tab)
       tab.active = true
+    }
+  }
+
+  selectNext(tab) {
+    const index = this._tabs.indexOf(tab)
+    let first = true
+    let i = index
+
+    while (first || i !== index) {
+      first = false
+      i++
+      if (i >= this._tabs.length) i = 0
+      const item = this._tabs[i]
+      if (!item.disabled) {
+        this.select(item)
+        return item
+      }
+    }
+  }
+
+  selectPrev(tab) {
+    const index = this._tabs.indexOf(tab)
+    let first = true
+    let i = index
+
+    while (first || i !== index) {
+      first = false
+      i--
+      if (i < 0) i = this.tabs.length - 1
+      const item = this._tabs[i]
+      if (!item.disabled) {
+        this.select(item)
+        return item
+      }
     }
   }
 }
